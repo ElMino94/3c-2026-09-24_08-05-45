@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 951c525f6932b2e4e8fab3789a82672d
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 625f186215c104763be7675aa2d941aa, type: 3}
+AssetOrigin:
+  serializedVersion: 1
+  productId: 383620
+  packageName: Stylized Car | Bratarooo
+  packageVersion: 1.0
+  assetPath: Assets/FunboosterGames/Shaders/MatCap.shadergraph
+  uploadId: 925124

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a749f8839137bfd4f80ba82811ed282e
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 383620
+  packageName: Stylized Car | Bratarooo
+  packageVersion: 1.0
+  assetPath: Assets/FunboosterGames/Shaders/Shadow.shader
+  uploadId: 925124
