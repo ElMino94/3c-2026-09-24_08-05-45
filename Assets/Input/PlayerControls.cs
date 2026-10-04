@@ -181,6 +181,16 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""Handbrake"",
+                    ""type"": ""Button"",
+                    ""id"": ""d35337be-d8b6-411e-969c-6abf8be9ad44"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -326,6 +336,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7b1bff3e-7b4a-4b49-9f7a-bc4e40aa784f"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Handbrake"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -343,6 +364,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_SwitchMode = m_Player.FindAction("SwitchMode", throwIfNotFound: true);
         m_Player_Reverse = m_Player.FindAction("Reverse", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_Handbrake = m_Player.FindAction("Handbrake", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -432,6 +454,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SwitchMode;
     private readonly InputAction m_Player_Reverse;
     private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_Handbrake;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -479,6 +502,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Interact".
         /// </summary>
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Handbrake".
+        /// </summary>
+        public InputAction @Handbrake => m_Wrapper.m_Player_Handbrake;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -532,6 +559,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @Handbrake.started += instance.OnHandbrake;
+            @Handbrake.performed += instance.OnHandbrake;
+            @Handbrake.canceled += instance.OnHandbrake;
         }
 
         /// <summary>
@@ -570,6 +600,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @Handbrake.started -= instance.OnHandbrake;
+            @Handbrake.performed -= instance.OnHandbrake;
+            @Handbrake.canceled -= instance.OnHandbrake;
         }
 
         /// <summary>
@@ -673,5 +706,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInteract(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Handbrake" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnHandbrake(InputAction.CallbackContext context);
     }
 }

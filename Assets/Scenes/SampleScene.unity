@@ -254,11 +254,16 @@ MonoBehaviour:
   maxReverseSpeed: 8
   brakeDeceleration: 10
   coastingDeceleration: 1.5
-  maxSteeringAngle: 35
-  steeringAccumulationSpeed: 60
-  steeringReturnSpeed: 90
-  maxTurnRate: 45
-  cameraOffset: {x: 0, y: 3, z: -6}
+  reverseThreshold: 0.05
+  maxSteeringAngle: 60
+  steeringAccumulationSpeed: 75
+  steeringReturnSpeed: 105
+  maxTurnRate: 60
+  handbrakeDeceleration: 18
+  handbrakeTurnBoost: 120
+  driftSlideStrength: 0.9
+  gripRecovery: 6
+  cameraOffset: {x: 0, y: 3, z: -1.5}
   cameraFollowSpeed: 6
   minFOV: 60
   maxFOV: 75
@@ -881,7 +886,7 @@ Transform:
   m_GameObject: {fileID: 695452138}
   serializedVersion: 2
   m_LocalRotation: {x: 0.13052616, y: 0, z: 0, w: 0.9914449}
-  m_LocalPosition: {x: 0, y: 3, z: -1.5}
+  m_LocalPosition: {x: 0, y: 3, z: -1}
   m_LocalScale: {x: 0.31282172, y: 0.95948833, z: 0.3621786}
   m_ConstrainProportionsScale: 0
   m_Children: []
