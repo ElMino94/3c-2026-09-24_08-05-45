@@ -191,6 +191,66 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""New action"",
+                    ""type"": ""Button"",
+                    ""id"": ""2289e342-8e7c-411b-994b-d7d239c1ddfe"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""AscendInput"",
+                    ""type"": ""Button"",
+                    ""id"": ""a5e000fb-da1e-4123-b5ad-8abaff649223"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""DescendInput"",
+                    ""type"": ""Button"",
+                    ""id"": ""d742245f-9698-4992-b948-c755e4a38d7d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""YawLeftInput"",
+                    ""type"": ""Button"",
+                    ""id"": ""7a33b184-0d8a-45ea-bb7d-259ca7faf61b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""YawRightInput"",
+                    ""type"": ""Button"",
+                    ""id"": ""51c5ae5b-a07e-4252-80b1-d83c600a2916"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""Zoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""3a747165-2a97-4442-a03f-3f527db9636d"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -347,6 +407,72 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Handbrake"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""83e17581-f338-4182-bab1-6b5a3815c11d"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""New action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""17b9d6af-7a77-4d3a-bde3-9d71acdac2ea"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AscendInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""38c6bfdb-a9d8-4446-976f-53bc3e2e1811"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DescendInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bdfe0f31-150d-4367-b9b8-2e9f09ae8bea"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""YawLeftInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a4742d59-cd12-4492-9e08-1f2a98b76996"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""YawRightInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8627d780-f3f5-4395-a258-69084f80d5cf"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -365,6 +491,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_Reverse = m_Player.FindAction("Reverse", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Handbrake = m_Player.FindAction("Handbrake", throwIfNotFound: true);
+        m_Player_Newaction = m_Player.FindAction("New action", throwIfNotFound: true);
+        m_Player_AscendInput = m_Player.FindAction("AscendInput", throwIfNotFound: true);
+        m_Player_DescendInput = m_Player.FindAction("DescendInput", throwIfNotFound: true);
+        m_Player_YawLeftInput = m_Player.FindAction("YawLeftInput", throwIfNotFound: true);
+        m_Player_YawRightInput = m_Player.FindAction("YawRightInput", throwIfNotFound: true);
+        m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -455,6 +587,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Reverse;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Handbrake;
+    private readonly InputAction m_Player_Newaction;
+    private readonly InputAction m_Player_AscendInput;
+    private readonly InputAction m_Player_DescendInput;
+    private readonly InputAction m_Player_YawLeftInput;
+    private readonly InputAction m_Player_YawRightInput;
+    private readonly InputAction m_Player_Zoom;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -506,6 +644,30 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Handbrake".
         /// </summary>
         public InputAction @Handbrake => m_Wrapper.m_Player_Handbrake;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Newaction".
+        /// </summary>
+        public InputAction @Newaction => m_Wrapper.m_Player_Newaction;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/AscendInput".
+        /// </summary>
+        public InputAction @AscendInput => m_Wrapper.m_Player_AscendInput;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/DescendInput".
+        /// </summary>
+        public InputAction @DescendInput => m_Wrapper.m_Player_DescendInput;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/YawLeftInput".
+        /// </summary>
+        public InputAction @YawLeftInput => m_Wrapper.m_Player_YawLeftInput;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/YawRightInput".
+        /// </summary>
+        public InputAction @YawRightInput => m_Wrapper.m_Player_YawRightInput;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Zoom".
+        /// </summary>
+        public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -562,6 +724,24 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Handbrake.started += instance.OnHandbrake;
             @Handbrake.performed += instance.OnHandbrake;
             @Handbrake.canceled += instance.OnHandbrake;
+            @Newaction.started += instance.OnNewaction;
+            @Newaction.performed += instance.OnNewaction;
+            @Newaction.canceled += instance.OnNewaction;
+            @AscendInput.started += instance.OnAscendInput;
+            @AscendInput.performed += instance.OnAscendInput;
+            @AscendInput.canceled += instance.OnAscendInput;
+            @DescendInput.started += instance.OnDescendInput;
+            @DescendInput.performed += instance.OnDescendInput;
+            @DescendInput.canceled += instance.OnDescendInput;
+            @YawLeftInput.started += instance.OnYawLeftInput;
+            @YawLeftInput.performed += instance.OnYawLeftInput;
+            @YawLeftInput.canceled += instance.OnYawLeftInput;
+            @YawRightInput.started += instance.OnYawRightInput;
+            @YawRightInput.performed += instance.OnYawRightInput;
+            @YawRightInput.canceled += instance.OnYawRightInput;
+            @Zoom.started += instance.OnZoom;
+            @Zoom.performed += instance.OnZoom;
+            @Zoom.canceled += instance.OnZoom;
         }
 
         /// <summary>
@@ -603,6 +783,24 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Handbrake.started -= instance.OnHandbrake;
             @Handbrake.performed -= instance.OnHandbrake;
             @Handbrake.canceled -= instance.OnHandbrake;
+            @Newaction.started -= instance.OnNewaction;
+            @Newaction.performed -= instance.OnNewaction;
+            @Newaction.canceled -= instance.OnNewaction;
+            @AscendInput.started -= instance.OnAscendInput;
+            @AscendInput.performed -= instance.OnAscendInput;
+            @AscendInput.canceled -= instance.OnAscendInput;
+            @DescendInput.started -= instance.OnDescendInput;
+            @DescendInput.performed -= instance.OnDescendInput;
+            @DescendInput.canceled -= instance.OnDescendInput;
+            @YawLeftInput.started -= instance.OnYawLeftInput;
+            @YawLeftInput.performed -= instance.OnYawLeftInput;
+            @YawLeftInput.canceled -= instance.OnYawLeftInput;
+            @YawRightInput.started -= instance.OnYawRightInput;
+            @YawRightInput.performed -= instance.OnYawRightInput;
+            @YawRightInput.canceled -= instance.OnYawRightInput;
+            @Zoom.started -= instance.OnZoom;
+            @Zoom.performed -= instance.OnZoom;
+            @Zoom.canceled -= instance.OnZoom;
         }
 
         /// <summary>
@@ -713,5 +911,47 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnHandbrake(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "New action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnNewaction(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "AscendInput" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAscendInput(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DescendInput" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDescendInput(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "YawLeftInput" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnYawLeftInput(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "YawRightInput" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnYawRightInput(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Zoom" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnZoom(InputAction.CallbackContext context);
     }
 }

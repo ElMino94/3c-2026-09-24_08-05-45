@@ -1,6 +1,7 @@
 using UnityEngine;
 
 // Contrôleur de voiture. Hérite de VehicleBase pour profiter du système d'entrée/sortie déjà en place.
+[RequireComponent(typeof(Rigidbody))]
 public class CarController : VehicleBase
 {
     [Header("Accélération")]
@@ -43,6 +44,7 @@ public class CarController : VehicleBase
     [SerializeField] private float maxFOV = 75f;
 
     private PlayerControls controls;
+    private Rigidbody rb;
     private float currentSpeed;        // positif = avant, négatif = marche arrière
     private float steeringAngle;       // en degrés, négatif = à gauche, positif = à droite
     private Vector3 velocityDirection; // direction réelle du déplacement, peut différer de l'avant de la voiture
@@ -53,6 +55,13 @@ public class CarController : VehicleBase
     {
         controls = new PlayerControls();
         velocityDirection = transform.forward;
+
+        rb = GetComponent<Rigidbody>();
+        // On bloque la rotation physique sur X/Z : seuls les chocs sur Y (le cap) nous intéressent,
+        // sinon la moindre collision ferait culbuter la voiture de façon imprévisible.
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
     }
 
     private void OnEnable() => controls.Player.Enable();
@@ -83,12 +92,9 @@ public class CarController : VehicleBase
         bool accelerating = move.y > 0.1f;
         bool steeringInput = Mathf.Abs(move.x) > 0.01f;
 
-        // Le volant est cumulatif : il continue de tourner tant qu'on tient Q ou D
         steeringAngle += move.x * steeringAccumulationSpeed * Time.deltaTime;
         steeringAngle = Mathf.Clamp(steeringAngle, -maxSteeringAngle, maxSteeringAngle);
 
-        // Il se remet droit progressivement en accélérant, mais seulement si on ne
-        // tient pas Q/D en même temps (sinon le recentrage annulerait le virage)
         if (accelerating && !steeringInput)
         {
             steeringAngle = Mathf.MoveTowards(steeringAngle, 0f, steeringReturnSpeed * Time.deltaTime);
@@ -99,15 +105,11 @@ public class CarController : VehicleBase
     {
         Vector2 move = controls.Player.Move.ReadValue<Vector2>();
         bool accelerating = move.y > 0.1f;
-        bool brakeOrReverseInput = move.y < -0.1f; // touche S tenue
+        bool brakeOrReverseInput = move.y < -0.1f;
 
-        // Si la voiture est quasiment à l'arrêt, S fait reculer au lieu de freiner dans le vide
         bool reversing = controls.Player.Reverse.IsPressed() || (brakeOrReverseInput && currentSpeed <= reverseThreshold);
         bool braking = brakeOrReverseInput && !reversing;
 
-        // On capture l'intensité du dérapage UNE SEULE FOIS, à l'instant où le frein est tiré,
-        // à partir de la vitesse du moment. Elle reste figée tant qu'on tient la touche, pour
-        // que la glisse ne s'arrête pas prématurément quand la vitesse chute juste après.
         if (controls.Player.Handbrake.WasPressedThisFrame())
         {
             driftIntensity = Mathf.Abs(currentSpeed) / maxForwardSpeed;
@@ -132,7 +134,6 @@ public class CarController : VehicleBase
         }
         else
         {
-            // Forte inertie : on ralentit très doucement quand on ne touche à rien
             currentSpeed = Mathf.MoveTowards(currentSpeed, 0f, coastingDeceleration * Time.deltaTime);
         }
 
@@ -141,26 +142,24 @@ public class CarController : VehicleBase
 
     private void ApplyMovement()
     {
-        // L'amplitude du virage dépend de la vitesse ACTUELLE : pas de rotation à l'arrêt,
-        // et la rotation s'essouffle naturellement en même temps que la voiture ralentit.
         float turnRateToUse = isHandbraking ? maxTurnRate + handbrakeTurnBoost * driftIntensity : maxTurnRate;
 
         float speedRatio = currentSpeed / maxForwardSpeed;
         float steerRatio = steeringAngle / maxSteeringAngle;
         float turnAmount = steerRatio * speedRatio * turnRateToUse * Time.deltaTime;
 
-        transform.Rotate(Vector3.up, turnAmount);
+        rb.MoveRotation(rb.rotation * Quaternion.Euler(0f, turnAmount, 0f));
 
-        // Grip : à quelle vitesse la trajectoire réelle recolle à l'avant de la voiture.
-        // Pendant le frein à main, on utilise l'intensité FIGÉE (driftIntensity) : la glisse
-        // reste forte tout du long, même si la voiture elle-même ralentit vite.
         float currentGrip = isHandbraking
             ? gripRecovery * (1f - driftSlideStrength * driftIntensity)
             : gripRecovery;
 
         velocityDirection = Vector3.Slerp(velocityDirection, transform.forward, currentGrip * Time.deltaTime);
 
-        transform.position += velocityDirection * currentSpeed * Time.deltaTime;
+        // On ne fixe que la vitesse horizontale : la vitesse verticale (Y) reste gérée par
+        // la gravité, pour que la voiture continue de bien reposer sur le sol.
+        Vector3 horizontalVelocity = velocityDirection * currentSpeed;
+        rb.linearVelocity = new Vector3(horizontalVelocity.x, rb.linearVelocity.y, horizontalVelocity.z);
     }
 
     private void FollowCamera()
@@ -191,11 +190,15 @@ public class CarController : VehicleBase
         currentSpeed = 0f;
         steeringAngle = 0f;
         velocityDirection = transform.forward;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
     }
 
     public override void ExitVehicle(GameObject driver)
     {
         base.ExitVehicle(driver);
         currentSpeed = 0f;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
     }
 }
