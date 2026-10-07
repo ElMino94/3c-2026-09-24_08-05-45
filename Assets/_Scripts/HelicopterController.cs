@@ -168,11 +168,10 @@ public class HelicopterController : VehicleBase
         }
     }
 
-    private void UpdateOrbitCamera()
+    // Calcule où la caméra orbitale DEVRAIT être en ce moment, évitement d'obstacles compris.
+    // Partagé entre la version "glissée" (UpdateOrbitCamera) et la version instantanée (SnapCameraToOrbit).
+    private void ComputeOrbitCameraTransform(out Vector3 position, out Quaternion rotation)
     {
-        if (vehicleCamera == null)
-            return;
-
         Vector3 pivot = transform.position + Vector3.up * 1.5f;
         Quaternion orbitRotation = Quaternion.Euler(orbitPitch, orbitYaw, 0f);
         Vector3 direction = orbitRotation * Vector3.back;
@@ -193,17 +192,33 @@ public class HelicopterController : VehicleBase
         }
 
         actualDistance = Mathf.Max(actualDistance, 0.5f);
-        Vector3 finalPosition = pivot + direction * actualDistance;
+        position = pivot + direction * actualDistance;
+        rotation = Quaternion.LookRotation(pivot - position);
+    }
+
+    private void UpdateOrbitCamera()
+    {
+        if (vehicleCamera == null)
+            return;
+
+        ComputeOrbitCameraTransform(out Vector3 targetPosition, out Quaternion targetRotation);
 
         vehicleCamera.transform.position = Vector3.Lerp(
-            vehicleCamera.transform.position, finalPosition, cameraSmoothSpeed * Time.deltaTime);
+            vehicleCamera.transform.position, targetPosition, cameraSmoothSpeed * Time.deltaTime);
+        vehicleCamera.transform.rotation = Quaternion.Slerp(
+            vehicleCamera.transform.rotation, targetRotation, cameraSmoothSpeed * Time.deltaTime);
+    }
 
-        Vector3 lookDir = pivot - vehicleCamera.transform.position;
-        if (lookDir.sqrMagnitude > 0.001f)
-        {
-            vehicleCamera.transform.rotation = Quaternion.Slerp(
-                vehicleCamera.transform.rotation, Quaternion.LookRotation(lookDir), cameraSmoothSpeed * Time.deltaTime);
-        }
+    // Place la caméra directement à la bonne position, sans glisser depuis son ancien
+    // emplacement : utile si l'hélico a été déplacé pendant qu'on n'était pas dedans.
+    private void SnapCameraToOrbit()
+    {
+        if (vehicleCamera == null)
+            return;
+
+        ComputeOrbitCameraTransform(out Vector3 position, out Quaternion rotation);
+        vehicleCamera.transform.position = position;
+        vehicleCamera.transform.rotation = rotation;
     }
 
     public override void EnterVehicle(GameObject driver)
@@ -222,6 +237,8 @@ public class HelicopterController : VehicleBase
 
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+
+        SnapCameraToOrbit();
     }
 
     public override void ExitVehicle(GameObject driver)
