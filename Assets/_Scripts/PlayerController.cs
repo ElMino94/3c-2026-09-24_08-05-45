@@ -155,6 +155,7 @@ public class PlayerController : MonoBehaviour
         float gravityMultiplier = gravityCurve.Evaluate(t);
 
         verticalVelocity += gravity * gravityMultiplier * Time.deltaTime;
+
     }
 
 }

@@ -41,45 +41,48 @@ public class TrainController : VehicleBase
 
     private float currentSpeed;
     private int currentSegment;
-    private float segmentT; // avancement de 0 à 1 sur le segment actuel
+    private float segmentT; 
     private bool isDerailed;
 
     private int currentCameraAnchor;
     private float cameraTimer;
     private Vector3 transitionStartPosition;
-    private float transitionProgress = 1f; // 1 = pas de transition en cours
+    private float transitionProgress = 1f; 
 
-    private void Awake()
-    {
+    private void Awake() {
+
         controls = new PlayerControls();
 
         rb = GetComponent<Rigidbody>();
-        rb.isKinematic = true; // le train suit sa voie, pas la physique libre
+        rb.isKinematic = true; 
         rb.interpolation = RigidbodyInterpolation.Interpolate;
+
     }
 
     private void OnEnable() => controls.Player.Enable();
     private void OnDisable() => controls.Player.Disable();
 
-    private void Update()
-    {
+    private void Update() {
+
         if (!IsOccupied)
             return;
 
         HandleSpeed();
         FollowPath();
+
     }
 
-    private void LateUpdate()
-    {
+    private void LateUpdate() {
+
         if (!IsOccupied)
             return;
 
         UpdateCinematicCamera();
+
     }
 
-    private void HandleSpeed()
-    {
+    private void HandleSpeed() {
+
         if (isDerailed)
             return;
 
@@ -95,25 +98,25 @@ public class TrainController : VehicleBase
             currentSpeed = Mathf.MoveTowards(currentSpeed, 0f, coastingDeceleration * Time.deltaTime);
 
         currentSpeed = Mathf.Clamp(currentSpeed, 0f, maxSpeed);
+
     }
 
-    private void FollowPath()
-    {
+    private void FollowPath() {
+
         if (waypoints == null || waypoints.Length < 4 || isDerailed)
             return;
 
         int n = waypoints.Length;
 
-        float segmentLength = Vector3.Distance(
-            waypoints[currentSegment % n].position,
-            waypoints[(currentSegment + 1) % n].position);
+        float segmentLength = Vector3.Distance(waypoints[currentSegment % n].position, waypoints[(currentSegment + 1) % n].position);
 
         segmentT += currentSpeed * Time.deltaTime / Mathf.Max(segmentLength, 0.01f);
 
-        while (segmentT >= 1f)
-        {
+        while (segmentT >= 1f) {
+
             segmentT -= 1f;
             currentSegment = (currentSegment + 1) % n;
+
         }
 
         Vector3 p0 = waypoints[(currentSegment - 1 + n) % n].position;
@@ -123,7 +126,6 @@ public class TrainController : VehicleBase
 
         Vector3 position = CatmullRom(segmentT, p0, p1, p2, p3);
 
-        // On regarde un petit peu plus loin pour orienter le train dans le sens de la marche
         float aheadT = Mathf.Clamp01(segmentT + 0.05f);
         Vector3 aheadPosition = CatmullRom(aheadT, p0, p1, p2, p3);
         Vector3 direction = (aheadPosition - position).normalized;
@@ -134,11 +136,11 @@ public class TrainController : VehicleBase
         rb.MovePosition(position);
 
         CheckDerailRisk(position, direction, segmentLength, p0, p1, p2, p3);
+
     }
 
-    private void CheckDerailRisk(Vector3 position, Vector3 direction, float segmentLength,
-        Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
-    {
+    private void CheckDerailRisk(Vector3 position, Vector3 direction, float segmentLength, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3) {
+
         float lookaheadT = curveLookahead / Mathf.Max(segmentLength, 0.01f);
         float farT = Mathf.Clamp01(segmentT + lookaheadT);
 
@@ -149,28 +151,29 @@ public class TrainController : VehicleBase
         float curveSeverity = Mathf.Clamp01(turnAngle / maxSafeTurnAngle);
         float safeSpeedLimit = Mathf.Lerp(maxSpeed, minDerailSpeed, curveSeverity);
 
-        if (currentSpeed > safeSpeedLimit)
-        {
+        if (currentSpeed > safeSpeedLimit) {
+
             Derail();
+
         }
+
     }
 
-    private void Derail()
-    {
+    private void Derail() {
+
         if (isDerailed) return;
 
         isDerailed = true;
         currentSpeed = 0f;
-        Debug.Log("Le train a déraillé : vitesse trop élevée pour ce virage !");
+        Debug.Log("Le train a déraille");
 
         if (bodyVisual != null)
             bodyVisual.localRotation = Quaternion.Euler(0f, 0f, 25f);
+
     }
 
-    // Formule standard pour faire passer une courbe douce par une série de points.
-    // t va de 0 à 1 entre p1 et p2 ; p0 et p3 servent juste à donner la bonne "tangente".
-    private Vector3 CatmullRom(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
-    {
+    private Vector3 CatmullRom(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3) {
+
         float t2 = t * t;
         float t3 = t2 * t;
 
@@ -180,22 +183,23 @@ public class TrainController : VehicleBase
         Vector3 d = -p0 + 3f * p1 - 3f * p2 + p3;
 
         return 0.5f * (a + b * t + c * t2 + d * t3);
+
     }
 
-    private void UpdateCinematicCamera()
-    {
+    private void UpdateCinematicCamera() {
+
         if (vehicleCamera == null || cameraAnchors == null || cameraAnchors.Length == 0)
             return;
 
         cameraTimer += Time.deltaTime;
-        if (cameraTimer >= cameraHoldDuration)
-        {
+        if (cameraTimer >= cameraHoldDuration) {
+
             cameraTimer = 0f;
             currentCameraAnchor = (currentCameraAnchor + 1) % cameraAnchors.Length;
 
-            // On mémorise d'où part la transition, pour une interpolation propre sur toute sa durée
             transitionStartPosition = vehicleCamera.transform.position;
             transitionProgress = 0f;
+
         }
 
         Transform anchor = cameraAnchors[currentCameraAnchor];
@@ -203,21 +207,18 @@ public class TrainController : VehicleBase
 
         transitionProgress = Mathf.Clamp01(transitionProgress + Time.deltaTime / cameraTransitionDuration);
 
-        // Smoothstep : accélère doucement au départ, ralentit doucement à l'arrivée.
-        // Beaucoup plus naturel qu'une vitesse constante qui "chasse" sa cible.
         float easedT = transitionProgress * transitionProgress * (3f - 2f * transitionProgress);
 
         vehicleCamera.transform.position = Vector3.Lerp(transitionStartPosition, anchor.position, easedT);
 
-        // On regarde le train en continu, à n'importe quel instant de la transition
         Vector3 lookTarget = transform.position + Vector3.up * 1.5f;
         Quaternion targetRotation = Quaternion.LookRotation(lookTarget - vehicleCamera.transform.position);
-        vehicleCamera.transform.rotation = Quaternion.Slerp(
-            vehicleCamera.transform.rotation, targetRotation, 10f * Time.deltaTime);
+        vehicleCamera.transform.rotation = Quaternion.Slerp(vehicleCamera.transform.rotation, targetRotation, 10f * Time.deltaTime);
+
     }
 
-    public override void EnterVehicle(GameObject driver)
-    {
+    public override void EnterVehicle(GameObject driver) {
+
         base.EnterVehicle(driver);
 
         currentSpeed = 0f;
@@ -227,34 +228,36 @@ public class TrainController : VehicleBase
 
         currentCameraAnchor = 0;
         cameraTimer = 0f;
-        transitionProgress = 1f; // la caméra se place net sur la première ancre, sans glisser depuis l'ancienne vue
+        transitionProgress = 1f;
+
     }
 
-    public override void ExitVehicle(GameObject driver)
-    {
+    public override void ExitVehicle(GameObject driver) {
+
         base.ExitVehicle(driver);
         currentSpeed = 0f;
+
     }
 
-    // --- Visualisation du chemin ---
 
-    private void OnDrawGizmos()
-    {
+    private void OnDrawGizmos() {
+
         if (waypoints == null || waypoints.Length < 4)
             return;
 
         int n = waypoints.Length;
 
         Gizmos.color = Color.yellow;
-        foreach (Transform wp in waypoints)
-        {
+        foreach (Transform wp in waypoints) {
+
             if (wp != null)
                 Gizmos.DrawSphere(wp.position, 0.5f);
+
         }
 
         Gizmos.color = Color.cyan;
-        for (int i = 0; i < n; i++)
-        {
+        for (int i = 0; i < n; i++) {
+
             Transform t0 = waypoints[(i - 1 + n) % n];
             Transform t1 = waypoints[i % n];
             Transform t2 = waypoints[(i + 1) % n];
@@ -267,28 +270,30 @@ public class TrainController : VehicleBase
             Vector3 previousPoint = p1;
             const int steps = 20;
 
-            for (int s = 1; s <= steps; s++)
-            {
+            for (int s = 1; s <= steps; s++) {
+
                 float t = s / (float)steps;
                 Vector3 point = CatmullRom(t, p0, p1, p2, p3);
                 Gizmos.DrawLine(previousPoint, point);
                 previousPoint = point;
+
             }
+
         }
+
     }
 
-    // --- Génération d'un vrai visuel de rails (clic droit sur le composant dans l'Inspector) ---
 
     [ContextMenu("Générer le visuel des rails")]
     private void GenerateRailVisual()
     {
-        if (waypoints == null || waypoints.Length < 4)
-        {
+        if (waypoints == null || waypoints.Length < 4) {
+
             Debug.LogWarning("Il faut au moins 4 points de passage pour générer les rails.");
             return;
+
         }
 
-        // On supprime l'ancien visuel si on régénère après avoir bougé des points
         Transform existing = GameObject.Find("RailsVisual")?.transform;
         if (existing != null)
             DestroyImmediate(existing.gameObject);
@@ -298,8 +303,8 @@ public class TrainController : VehicleBase
         int n = waypoints.Length;
         const int stepsPerSegment = 10;
 
-        for (int i = 0; i < n; i++)
-        {
+        for (int i = 0; i < n; i++) {
+
             Transform t0 = waypoints[(i - 1 + n) % n];
             Transform t1 = waypoints[i % n];
             Transform t2 = waypoints[(i + 1) % n];
@@ -308,18 +313,21 @@ public class TrainController : VehicleBase
             Vector3 p0 = t0.position, p1 = t1.position, p2 = t2.position, p3 = t3.position;
             Vector3 previousPoint = p1;
 
-            for (int s = 1; s <= stepsPerSegment; s++)
-            {
+            for (int s = 1; s <= stepsPerSegment; s++) {
+
                 float t = s / (float)stepsPerSegment;
                 Vector3 point = CatmullRom(t, p0, p1, p2, p3);
                 CreateRailSegment(railsRoot.transform, previousPoint, point);
                 previousPoint = point;
+
             }
+
         }
+
     }
 
-    private void CreateRailSegment(Transform parent, Vector3 from, Vector3 to)
-    {
+    private void CreateRailSegment(Transform parent, Vector3 from, Vector3 to) {
+
         GameObject segment = GameObject.CreatePrimitive(PrimitiveType.Cube);
         segment.name = "RailSegment";
         segment.transform.SetParent(parent);
@@ -329,9 +337,10 @@ public class TrainController : VehicleBase
         segment.transform.rotation = Quaternion.LookRotation(to - from);
         segment.transform.localScale = new Vector3(2f, 0.2f, length);
 
-        // Purement visuel : on retire le Collider pour ne gêner ni la détection du train ni les déplacements
         Collider col = segment.GetComponent<Collider>();
         if (col != null)
             DestroyImmediate(col);
+
     }
+
 }
