@@ -21,6 +21,7 @@ public class HelicopterController : VehicleBase
     [SerializeField] private float verticalAcceleration = 6f;
     [SerializeField] private float verticalDrag = 4f;
     [SerializeField] private float maxVerticalSpeed = 8f;
+    [Tooltip("Altitude minimale du centre de l'hélico, pour ne pas s'enfoncer dans le sol")]
     [SerializeField] private float minAltitude = 1f;
 
     [Header("Rotation sur lui-même (lacet)")]
@@ -32,8 +33,10 @@ public class HelicopterController : VehicleBase
     [SerializeField] private float maxPitch = 80f;
     [SerializeField] private float minZoom = 4f;
     [SerializeField] private float maxZoom = 20f;
+    [Tooltip("Distance ajoutée/retirée à chaque cran de molette")]
     [SerializeField] private float zoomStep = 1.5f;
     [SerializeField] private float cameraSmoothSpeed = 10f;
+    [Tooltip("Marge gardée entre la caméra et un obstacle qu'elle évite")]
     [SerializeField] private float cameraCollisionPadding = 0.3f;
 
     private PlayerControls controls;
@@ -53,12 +56,16 @@ public class HelicopterController : VehicleBase
     private float orbitPitch;
     private float currentZoom;
 
-    private void Awake() {
-
+    private void Awake()
+    {
         controls = new PlayerControls();
 
         rb = GetComponent<Rigidbody>();
-        rb.useGravity = false; // l'hélico plane, l'altitude est gérée entièrement par le script
+        // La gravité reste active : tant que personne ne pilote, elle fait tomber et se
+        // poser l'hélico au sol au lieu de le laisser flotter. Pendant le pilotage, le script
+        // fixe la vitesse verticale complète à chaque frame (voir ApplyMovement), ce qui
+        // annule naturellement son effet : le vol stationnaire continue de fonctionner.
+        rb.useGravity = true;
         // Rotation physique bloquée sur X/Z : seul le lacet (Y) est piloté, pour éviter
         // qu'un choc ne fasse culbuter l'hélico de façon imprévisible.
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
