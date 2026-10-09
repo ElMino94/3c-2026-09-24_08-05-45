@@ -177,6 +177,8 @@ public class HelicopterController : VehicleBase
 
         float actualDistance = currentZoom;
 
+
+        //check si ya obj pres du player
         RaycastHit[] hits = Physics.RaycastAll(pivot, direction, currentZoom);
         foreach (RaycastHit hit in hits)
         {
@@ -190,6 +192,7 @@ public class HelicopterController : VehicleBase
                 actualDistance = dist;
         }
 
+        // resultat de la cam contre obj
         actualDistance = Mathf.Max(actualDistance, 0.5f); 
         position = pivot + direction * actualDistance;
         rotation = Quaternion.LookRotation(pivot - position);

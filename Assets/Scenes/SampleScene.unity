@@ -1612,7 +1612,7 @@ MonoBehaviour:
   maxTurnRate: 60
   handbrakeDeceleration: 18
   handbrakeTurnBoost: 120
-  driftSlideStrength: 0.9
+  driftSlideStrength: 1
   gripRecovery: 6
   cameraOffset: {x: 0, y: 3, z: -1.5}
   cameraFollowSpeed: 6
